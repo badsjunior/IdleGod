@@ -1,0 +1,883 @@
+Let's make a game!
+	name:	Idle God v0.1 (ALPHA)
+	by:		Braz Araujo da Silva Junior
+	desc:	In this game you control a universe and decide how you are going to shape it!
+	created:30/05/2018
+	updated:25/06/2018
+
+Settings
+	background:	https://i.ytimg.com/vi/DgtXWjd3H5s/maxresdefault.jpg
+    spritesheet:base, 128 by 128, https://i.imgur.com/8Bqso3l.png
+    spritesheet:icon, 128 by 128, https://i.imgur.com/081IKJD.png
+    spritesheet:badge, 128 by 128, https://i.imgur.com/IvtBYVV.png
+
+CSS
+	.pullRight
+	{
+		animation:pullRight 0.75s;
+	}
+	@keyframes pullRight
+	{
+	50% { transform: scale(0.75) rotate(-20deg) translateY(-6em) translateX(-2em);}
+	60% { transform: scale(0.55) rotate(-30deg) translateY(-12em) translateX(-8em);}
+	80% { transform: scale(0.75) rotate(-20deg) translateY(-6em) translateX(-2em);}
+	100% { transform: scale(0.55) rotate(-30deg) translateY(-12em) translateX(-8em);}
+	}
+
+	.pullLeft
+	{
+		animation:pullLeft 0.75s;
+	}
+	@keyframes pullLeft
+	{
+	50% { transform: scale(0.75) rotate(20deg) translateY(-6em) translateX(2em);}
+	60% { transform: scale(0.55) rotate(30deg) translateY(-12em) translateX(8em);}
+	80% { transform: scale(0.75) rotate(20deg) translateY(-6em) translateX(2em);}
+	100% { transform: scale(0.55) rotate(30deg) translateY(-12em) translateX(8em);}
+	}
+	
+	.blink
+	{
+		animation:blink 0.25s;
+	}
+	@keyframes blink
+	{
+		50% {transform: scaleY(0.05);}
+	}
+
+	.touch
+	{
+		animation:touch 0.5s;
+	}
+	@keyframes touch
+	{
+		50% {transform: translateY(-3em) translateX(3em);}
+	}
+
+	.flash
+	{
+		animation:flash 0.5s;
+	}
+	@keyframes flash
+	{
+		0% {filter:brightness(1.5);}
+		100% {filter:brightness(1);}
+	}
+
+	.craveAttention
+	{
+		animation:craveAttention 5s;
+	}
+	@keyframes craveAttention
+	{
+	5% { transform: scale(1.25);}
+	10% { transform: scale(1);}
+	15% { transform: scale(1.25);}
+	20% { transform: scale(1);;}
+	}
+
+	.upgrade.notOwned
+	{
+		filter:brightness(0.5);
+		animation-name:craveAttention;
+		animation-iteration-count:infinite;
+		animation-duration:5s;
+	}
+	.upgrade.cantAfford
+	{
+		animation: none !important;
+	}
+	.cantAfford
+	{
+		filter:opacity(0.5);
+	}
+	#game
+	{
+		background-size: cover;
+	}
+	.thing
+	{
+		background: rgba(255,255,255,0);
+		transition: all 0.5s ease;
+		border: none;
+		color: #fff;
+	}
+	.upgrade.owned, .achiev.owned
+	{
+    	box-shadow: none;
+	}
+	.thing:hover
+	{
+		background:rgba(255,255,255,0);
+		filter:brightness(1.25);
+		//transform: scale(1.25);
+	}
+	.thing-icon
+	{
+		width:128px;
+		height:128px;
+	}
+	.resourceIcon, .particle
+	{
+		width:64px;
+		height:64px;
+	}
+	/*.shiny-icon
+	{
+		width:64px;
+		height:64px;
+	}
+	.thing.visual
+	{
+		position:relative;
+		width:64px;
+		height:64px;
+		left:0%;
+		top:0%;
+		bottom:0%;
+		right:0%;
+		margin-top:0px;
+		margin-left:0px;
+		margin-bottom:0px;
+		margin-right:0px;
+	}*/
+	.thing.bigButton
+	{
+		position:relative;
+		left:0%;
+		top:0%;
+		margin-top:175px;
+		margin-left:64px;
+	}
+
+Resources
+//------------------------------------------------Basic------------------------------------------------------------------//
+	*space
+		name:Space
+		desc:The very fabric of the universe, it is where matter lays. A unity of space has 0.0000000000000000000000000000000001 (10^-35) meters.
+		icon:https://i.imgur.com/93EfDhA.png
+		icon class:resourceIcon
+		tag:basic
+
+	*time
+		name:Time
+		desc:The very fabric of the universe, it allows the existence of multiple states of the universe. A unity of time is an instant that lasts 0.00000000000000000000000000000000000000000001 (10^−44) seconds.
+		icon:https://i.imgur.com/SFW1ema.png
+		icon class:resourceIcon
+		tag:basic
+
+	*energy
+		name:Energy
+		desc:The very fabric of the universe, it allows the universe to change its state. A unity of energy is 0.000000000000000000000000000000001 (10^-34) joules.
+		icon:https://i.imgur.com/xpVXygS.png
+		icon class:resourceIcon
+		tag:basic
+//----------------------------------------------Counters-----------------------------------------------------------------//
+	*godlyThing|godlyThings
+		name:Godly Things
+		desc:The amount of valid things you've done in this game.
+		is always: (godlyActions + godlyClicks + godlyProducers + godlyUpgrades)
+		//always hidden
+
+	*godlyAction|godlyActions
+		name:Godly Actions
+		desc:The amount of valid actions you've taken in this game.
+		on earn:gain 1 arbitraryTime
+		is always: (pullsRight + pullsLeft + stretchesRight + stretchesLeft + timeShifts + feedbacks)
+		//always hidden
+
+	*godlyClick|godlyClicks
+		name:Godly Clicks
+		desc:The amount of valid clicks you've done in this game.
+		is always: (rightHand:clicks + leftHand:clicks + eye:clicks + finger:clicks)
+		//always hidden
+
+	*godlyProducer|godlyProducers
+		name:Godly Producers
+		desc:The amount of producers you have in this game.
+		is always: (strings + chronons + energos)
+		always hidden
+
+	*godlyUpgrade|godlyUpgrades
+		name:Godly Upgrades
+		desc:The amount of upgrades you have.
+		//always hidden
+
+	*godlySecond|godlySeconds
+		name:Godly Seconds
+		desc:The amount of time you spent in this game.
+		passive:gain 1 godlySecond
+		on start:
+			gain initialDiscount
+			gain oneTimeOffer
+		end
+		//always hidden
+
+	*idleSecond|idleSeconds
+		name:Idle Seconds
+		desc:The amount of time that you did nothing!
+		passive:gain 1 idleSecond
+		//always hidden
+
+//--------------------------------------------Click Counters--------------------------------------------------------------//
+	*grab|grabs
+		name:Left to grab it right!
+		desc:The amount of time you grabbed this universe.
+		is always: (rightHand:clicks + leftHand:clicks)
+		always hidden
+
+	*watch|watches
+		name:Watch and Learn!
+		desc:The amount of time you watched this universe.
+		is always: (eye:clicks)
+		always hidden
+
+	*touch|touches
+		name:Touch it!
+		desc:The amount of time you touched this universe.
+		is always: (finger:clicks)
+		always hidden
+//----------------------------------------Production Counters------------------------------------------------------------//
+	*spaceProd
+		name:Touch it!
+		desc:The amount of time you touched this universe.
+		is always: (space:ps)
+		always hidden
+	*timeProd
+		name:Touch it!
+		desc:The amount of time you touched this universe.
+		is always: (time:ps)
+		always hidden
+	*energyProd
+		name:Touch it!
+		desc:The amount of time you touched this universe.
+		is always: (energy:ps)
+		always hidden
+//-----------------------------------------------Globals------------------------------------------------------------------//
+	*oneTimePrice
+		name:One Time Price
+		desc:The price of the next thing.
+		start with:100
+		//always hidden
+//--------------------------------------------Time Lines-----------------------------------------------------------------//
+	*arbitraryTime
+		name:ArbitraryTime
+		desc:The time line of your actions.
+		always hidden
+//------------------------------------------Action Counters--------------------------------------------------------------//
+    *TEMPLATE
+        on earn:
+			gain 1 arbitraryTime
+		end
+
+	*pullRight|pullsRight
+		name:Pull it Right!
+		desc:The amount of times you pulled this universe.
+		always hidden
+
+	*pullLeft|pullsLeft
+		name:Left to Pull!
+		desc:The amount of times you pulled this universe.
+		always hidden
+
+	*pullRightInARow|pullsRightInARow
+		name:Pull it Right!
+		desc:The amount of times you pulled this universe.
+		always hidden
+
+	*pullLeftInARow|pullsLeftInARow
+		name:Left to Pull!
+		desc:The amount of times you pulled this universe.
+		always hidden
+
+	*stretchRight|stretchesRight
+		name:Stretch it Right!
+		desc:The amount of times you stretched this universe.
+		always hidden
+
+	*stretchLeft|stretchesLeft
+		name:Left to Stretch!
+		desc:The amount of times you stretched this universe.
+		always hidden
+
+	*timeShift|timeShifts
+		name:Don't mess with time!
+		desc:The amount of times you timeShifted this universe.
+		always hidden
+
+	*feedback|feedbacks
+		name:Fill me!
+		desc:The amount of times you energized this universe.
+		always hidden
+//------------------------------------------------------------------------------------------------------------------------//
+
+Buttons
+    *TEMPLATE
+        on click:
+			idleSeconds = 0
+		end
+
+	//*debug
+	//	on click:
+	//		do gainidle with eye
+	//	end
+
+	*rightHand
+		name:Grab (Right)
+		desc:Expands the universe.<//><b>Effect:</b><.>Produces <b>[1 + (string*handUpI)]</b> (1[?(have handUpI)|+<#53ff51>[string]</#>|]) space.<//><b>Upgrades:</b>[?(have handUpI)|<.><#53ff51>[n:handUpI]</#>: Increases space production by 1 for each string.|][?(have handTraitRightI)|<.><#53ff51>[n:handTraitRightI]</#>: Grants clicks a <b>10%</b> chance of triggering a <#00faff>Pull</#>.|][?(have handTraitBothI)|<.><#53ff51>[n:handTraitBothI]</#>: <#00faff>Stretches</#> grants 5x more space.|]<//><b>Actions:</b>[?(have handAddI)|<.><#00faff>Stretch</#>: Grants [max(1,ceil(space*0.01)*pow(2,pullLeftInARow)*pow(5,handTraitBothI))] space ([pow(2,pullLeftInARow)*pow(5,handTraitBothI)]% of your current) and breaks pull sequences.|][?(have handTraitRightI or have handTraitLeftI)|<.><#00faff>Pull</#>: Multiplies the effect of <b>Left Stretch</b> by [pow(2,pullRightInARow)] (exponential with pulls in a row), but has an increasing chance to do a <b>Right Stretch</b>.|]
+		icon:https://i.imgur.com/dP2dpv1.png
+        class:bigButton hasFlares
+		no text
+        on click:
+			gain 1 space
+			if (have handTraitRightI and chance(10%)) do pull
+			if (have grabbedLeft and have handAddI)
+				do stretch
+			else if (no grabbedRight)
+				gain grabbedRight
+			end
+		end
+		on stretch:
+			do animpull
+			do animpull with leftHand
+			gain 1 stretchRight
+			gain max(1,ceil(space*0.01*pow(2,pullLeftInARow)*pow(5,handTraitBothI))) space
+			lose grabbedLeft
+			lose pullRightInARow
+			lose pullLeftInARow
+			toast Stretched Resources: +[max(1,ceil(space*0.01*pow(2,pullRightInARow)*pow(5,handTraitBothI)))] space
+		end
+		on pull:
+			do animpull
+			gain 1 pullRight
+			gain 1 pullRightInARow
+			if (pullRightInARow<7)
+				$perCent = pow(2,pullRightInARow)
+			else
+				$perCent = ((1-(1/pullRightInARow))*100)
+			end
+			if (chance($perCent))
+				do stretch
+			end
+		end
+		on animpull:
+			anim icon pullRight
+		end
+
+	*leftHand
+		name:Grab (Left)
+		desc:Expands the universe.<//><b>Effect:</b><.>Produces <b>[1 + (string*handUpI)]</b> (1[?(have handUpI)|+<#53ff51>[string]</#>|]) space.<//><b>Upgrades:</b>[?(have handUpI)|<.><#53ff51>[n:handUpI]</#>: Increases space production by 1 for each string.|][?(have handTraitLeftI)|<.><#53ff51>[n:handTraitLeftI]</#>: Grants clicks a <b>10%</b> chance of triggering a <#00faff>Pull</#>.|][?(have handTraitBothI)|<.><#53ff51>[n:handTraitBothI]</#>: <#00faff>Stretches</#> grants 5x more space.|]<//><b>Actions:</b>[?(have handAddI)|<.><#00faff>Stretch</#>: Grants [max(1,ceil(space*0.01)*pow(2,pullRightInARow)*pow(5,handTraitBothI))] space ([pow(2,pullRightInARow)*pow(5,handTraitBothI)]% of your current) and breaks pull sequences.|][?(have handTraitRightI or have handTraitLeftI)|<.><#00faff>Pull</#>: Multiplies the effect of <b>Right Stretch</b> by [pow(2,pullLeftInARow)] (exponential with pulls in a row), but has an increasing chance to do a <b>Left Stretch</b>.|]
+		icon:https://i.imgur.com/ZI751fw.png
+        class:bigButton hasFlares
+		no text
+        on click:
+			gain 1 space
+			if (have handTraitLeftI and chance(10%)) do pull
+			if (have grabbedRight and have handAddI)
+				do stretch
+			else if (no grabbedLeft)
+				gain grabbedLeft
+			end
+		end
+		on stretch:
+			do animpull
+			do animpull with rightHand
+			gain 1 stretchLeft
+			gain max(1,ceil(space*0.01*pow(2,pullRightInARow)*pow(5,handTraitBothI))) space
+			lose grabbedRight
+			lose pullRightInARow
+			lose pullLeftInARow
+			toast Stretched Resources: +[max(1,ceil(space*0.01*pow(2,pullRightInARow)*pow(5,handTraitBothI)))] space
+		end
+		on pull:
+			do animpull
+			gain 1 pullLeft
+			gain 1 pullLeftInARow
+			if (pullLeftInARow<7)
+				$perCent = pow(2,pullLeftInARow)
+			else
+				$perCent = ((1-(1/pullLeftInARow))*100)
+			end
+			if (chance($perCent))
+				do stretch
+			end
+		end
+		on animpull:
+			anim icon pullLeft
+		end
+
+/*<.>You've wasted <b>[floor(godlySeconds/3600)]</b> hours, <b>[floor(godlySeconds/60)%60]</b> minutes and <b>[godlySeconds%60]</b> seconds making this universe.*/
+	*eye
+		name:Watch
+		desc:Stores states of the universe, memoryzing an instant.<//><b>Effect:</b><.>Produces <b>[1 + ((godlySeconds/60)*eyeUpI)]</b> (1[?(have eyeUpI)|+<#fffc51>[godlySeconds/60]</#>|]) time.<//><b>Upgrades:</b>[?(have eyeUpI)|<.><#fffc51>[n:eyeUpI]</#>: Increases time production by 1 for each minute played.|][?(have eyeTraitNoI)|<.><#fffc51>[n:eyeTraitNoI]</#>: At the first second of each minute played, clicks trigger <#00faff>Time Shift</#>.|][?(have eyeTraitStaticI)|<.><#fffc51>[n:eyeTraitStaticI]</#>: Triggers <#00faff>Time Shift</#> each 5 minutes.|][?(have eyeTraitFairI)|<.><#fffc51>[n:eyeTraitFairI]</#>: After 20 seconds being idle, the next click triggers <#00faff>Time Shift</#>.|]<//><b>Actions:</b>[?(have eyeAddI)|<.><#00faff>Time Shift</#>: Grants 1 second of all your productions.|]
+		icon:https://i.imgur.com/fMjoFzR.png
+        class:bigButton hasFlares
+		no text
+        on click:
+			anim icon blink
+			gain 1 time
+			if ((have eyeTraitNoI) and ((godlySeconds%60)=0)) do timeshift
+			if ((have eyeTraitFairI) and (idleForALilWhile))
+				do timeshift
+				lose idleForALilWhile
+			end
+		end
+		on gainidle:
+			gain idleForALilWhile
+		end
+		on timeshift:
+			anim icon flash
+			gain 1 timeShift
+			gain space:ps space
+			gain time:ps time
+			gain energy:ps energy
+			toast Timeshifted Resources: +[space:ps] space; +[time:ps] time; +[energy:ps] energy;
+		end
+
+	*finger
+		name:Touch
+		desc:Touches the universe, energyzing it.<//><b>Effect:</b><.>Produces <b>[1 + (touches*fingerUpI)]</b> (1[?(have fingerUpI)|+<#ff3f3f>[touches]</#>|]) energy.<//><b>Upgrades:</b>[?(have fingerUpI)|<.><#ff3f3f>[n:fingerUpI]</#>: Increases time production by <b>[finger:clicks]</b> (1 for each touch you've made).|][?(have fingerTraitProducerI)|<.><#ff3f3f>[n:fingerTraitProducerI]</#>: Buying any producer triggers <#00faff>Feedback</#> 5 times. <#00faff>Feedback</#> discount has a <b>50%</b> chance of not being lost on your next purchase.|][?(have fingerTraitClickI)|<.><#ff3f3f>[n:fingerTraitClickI]</#>: Grants clicks a <b>15%</b> chance of triggering a <#00faff>Feedback</#>.|][?(have fingerTraitNoI)|<.><#ff3f3f>[n:fingerTraitNoI]</#>: Buying any producer triggers <#00faff>Feedback</#> 3 times. Grants clicks a <b>3%</b> chance of triggering a <#00faff>Feedback</#>|]<//><b>Actions:</b>[?(have fingerAddI)|<.><#00faff>Feedback</#>: Grants 1% discount on your next purchase.|]
+		icon:https://i.imgur.com/zrbzmWS.png
+        class:bigButton hasFlares
+		no text
+        on click:
+			anim icon touch
+			gain 1 energy
+			if (chance((15*fingerTraitClickI) + (3*fingerTraitNoI))) do feedback
+		end
+		on feedback:
+			gain 1 feedback
+			lose 1 oneTimePrice
+			toast Feedback Discount +1%!
+		end
+
+Buildings
+    *TEMPLATE
+        on earn:
+			anim glow
+			lose initialDiscount
+			if (chance((100 - (50*fingerTraitProducerI))%))
+				oneTimePrice = 100
+			end
+			if (fingerTraitProducerI)
+				do feedback with finger
+				do feedback with finger
+				do feedback with finger
+				do feedback with finger
+				do feedback with finger
+			end
+			if (fingerTraitNoI)
+				do feedback with finger
+				do feedback with finger
+				do feedback with finger
+			end
+			idleSeconds = 0
+		end
+       
+    *string|strings
+        name:String|String
+        desc:The universe fabrics fabric. It defines space. <//><b>Effect:</b><.>Produces <b>[(1 + (((strings+chronons)/100)*stringXchrononUpI))*pow(strings,stringUpI)]</b> (1[?stringXchrononUpI|<#fffc51>+[((strings+chronons)/100)]</#>|][?stringUpI|<#53ff51>x[string]</#>|]) space/s.<//><b>Upgrades:</b>[?stringUpI|<.><#53ff51>[n:stringUpI]</#>: Multiplies efficiency by the number of strings|][?stringXchrononUpI|<.><#fffc51>[n:stringXchrononUpI]</#>: Increases core space production by <b>1%</b> of the sum of strings and chronons|][?stringXenergoUpI|<.><#ff3f3f>[n:stringXenergoUpI]</#>: Reduces the cost of strings for each energo owned|]
+        icon:icon[0,0] base[0,2] base[0,0]
+        cost:10 space
+        on tick:
+			gain 1 space
+			gain floor(0) time
+			gain floor(0) energy
+		end
+        unlocked
+
+    *chronon|chronons
+        name:Chronon|Chronons
+		class:tierI
+        desc:The universe fabrics fabric. It defines instants. <//><b>Effect:</b><.>Produces <b>[(1 + (godlyActions*chrononUpI))*pow((1+((strings+chronons)/100)),stringXchrononUpI)]</b> (1[?chrononUpI|<#fffc51>+[godlyActions]</#>|][?stringXchrononUpI|<#53ff51>x[(100+(strings+chronons))]%</#>|]) time/s.<//><b>Upgrades:</b>[?chrononUpI|<.><#fffc51>[n:chrononUpI]</#>: Increases core time production by 1 for each action done.|][?stringXchrononUpI|<.><#53ff51>[n:stringXchrononUpI]</#>: Increases efficiency by <b>1%</b> of the sum of strings and chronons|][?chrononXenergoUpI|<.><#ff3f3f>[n:chrononXenergoUpI]</#>: Reduces the cost of chronons for each energo owned|]
+        icon:icon[0,1] base[1,2] base[0,0]
+        cost:10 time
+		on tick:
+			gain floor(0) space
+			gain 1 time
+			gain floor(0) energy
+		end
+        unlocked
+
+    *energo|energos
+        name:Energo|Energos
+		class:tierII
+        desc:The universe fabrics fabric. It defines energy charges. <//><b>Effect:</b><.>Produces <b>[(1 + ((strings/100)*energoXstringUpI))*pow((godlySeconds%360),energoUpI)]</b> (1[?energoXstringUpI|<#53ff51>+[(strings/100)]</#>|][?energoUpI|<#ff3f3f>x[(godlySeconds%360)]</#>|]) time/s.<//><b>Upgrades:</b>[?energoUpI|<.><#ff3f3f>[n:energoUpI]</#>: Multiplies efficiency by the spin angle.|][?energoXstringUpI|<.><#53ff51>[n:energoXstringUpI]</#>: Increases core energy production by <b>1%</b> of the strings|][?energoXchrononUpI|<.><#fffc51>[n:energoXchrononUpI]</#>: Reduces the cost of energos for each action done|]
+        icon:icon[0,2] base[2,2] base[0,0]
+        cost:10 energy
+		on tick:
+			gain floor(0) space
+			gain floor(0) time
+			gain 1 energy
+		end
+        unlocked
+
+Upgrades
+//-----------------------------------------------Hidden------------------------------------------------------------------//
+	*initialDiscount
+		name:IT'S FREE! OuO
+		passive:multiply cost of energo by 0
+		passive:multiply cost of string by 0
+		passive:multiply cost of chronon by 0
+		always hidden
+	*oneTimeOffer
+		name:It's cheaper, for once! OuO
+		passive:multiply cost of :Upgrades by (oneTimePrice/100)
+		passive:multiply cost of :Buildings by (oneTimePrice/100)
+		always hidden
+	*grabbedRight
+		always hidden
+	*grabbedLeft
+		always hidden
+	*idleForALilWhile
+		always hidden
+
+//-----------------------------------------------Commom------------------------------------------------------------------//
+    *TEMPLATE
+		passive:grant 1 godlyUpgrade
+		on earn:
+			oneTimePrice = 100
+			idleSeconds = 0
+		end
+//-----------------------------------------------Tier I------------------------------------------------------------------//
+	*stringUpI
+		name:Unidimentional Weaving
+		desc:Your strings are chained up creating a unidimentional space.<//><b>Effect:</b><.>Multiply the production of <b>strings</b> by <b>×[strings]</b> (number of strings).
+		icon:badge[0,0] icon[0,0] base[0,2] base[0,0]
+		passive:multiply tag:basic yield of strings by (strings)
+		req:20 strings
+		cost:2000 space
+
+	*stringXchrononUpI
+		name:Space-Time Relating
+		desc:You classify strings by chronons and chronons by strings. <//><b>Effect:</b><.>Increases the core space production of <b>strings</b> by <b>[((chronon + string)/100)]</b> (1% of the string+chronon amount).<.>Increases the production of <b>chronons</b> by <b>[((chronon + string))]%</b> (1% for each string or chronon).
+		icon:badge[0,0] icon[0,0] base[1,2] base[0,0]
+		passive:increase space yield of strings by (((chronon + string)/100)*strings)
+		passive:multiply tag:basic yield of chronons by (1+((chronon + string)/100))
+		req:10 strings
+		req:10 chronons
+		cost:1000 space
+		cost:1000 time
+
+	*stringXenergoUpI
+		name:Charged Strings
+		desc:Your energos fills strings with energy, charged strings costs less. <//><b>Effect:</b><.>Reduces the cost of <b>strings</b> for each energo you have.
+		icon:badge[0,0] icon[0,0] base[2,2] base[0,0]
+		passive:multiply cost of strings by (1/energo)
+		req:10 strings
+		req:10 energos
+		cost:1000 space
+		cost:1000 energy
+
+	*chrononUpI
+		name:Arbitrary States
+		desc:Your chronons defines instants you think that may be interesting to exist. <//><b>Effect:</b><.>Increases the core time production of <b>chronons</b> by <b>[godlyActions]</b> (1 for each action ever taken).
+		icon:badge[0,0] icon[0,1] base[1,2] base[0,0]
+		passive:increase time yield of chronons by (chronons*godlyActions)
+		req:20 chronons
+		cost:2000 time
+
+	*chrononXstringUpI
+		name:Arbitrary Time Line
+		desc:Your chronons are arbitrarily queued up creating an arbitrary time line. Your actions advance in this time line, when you reach the ending chronon, you make another line with an additional chronon. <//><b>Effect:</b><.>Gain <b>1 chronon</b> for each <b>[chronons]</b> actions done.
+		icon:badge[0,0] icon[0,1] base[0,2] base[0,0]
+		passive:
+			if (arbitraryTime >= chronons)
+				gain 1 chronon
+				arbitraryTime = 0
+			end
+		end
+		req:10 chronons
+		req:10 strings
+		cost:1000 time
+		cost:1000 space
+
+	*chrononXenergoUpI
+		name:Charged Chronons
+		desc:Your energos fills chronons with energy, charged chronons costs less. <//><b>Effect:</b><.>Reduces the cost of <b>chronons</b> for each energo you have.
+		icon:badge[0,0] icon[0,1] base[2,2] base[0,0]
+		passive:multiply cost of chronons by (1/energo)
+		req:10 chronons
+		req:10 energos
+		cost:1000 time
+		cost:1000 energy
+
+	*energoUpI
+		name:Isospin
+		desc:Spin is a quantum number that defines intrinsic characteristics of elementary particles. Your energos are dimensionless, so it is not really spinning. It just mathematically behaves like multidimensional spinning things.<//><b>Effect:</b><.>Increases all productions of <b>energos</b> by <b>×[(godlySeconds%360)]</b> (continuously increasing and resetting at 360).
+		icon:badge[0,0] icon[0,2] base[2,2] base[0,0]
+		passive:multiply tag:basic yield of energos by (godlySeconds%360)
+		req:20 energo
+		cost:2000 energy
+
+	*energoXstringUpI
+		name:Conductor Strings
+		desc:Your strings are able to store your energos, allowing them to safely produce energy. <//><b>Effect:</b><.>Gives <b>energos</b> a core energy production of <b>[0.1*strings]</b> (1% of the string amount).
+		icon:badge[0,0] icon[0,2] base[0,2] base[0,0]
+		passive:increase energy yield of energos by ((0.1*strings)*energos)
+		req:10 energos
+		req:10 strings
+		cost:1000 energy
+		cost:1000 space
+
+	*energoXchrononUpI
+		name:Arbitrary Energy
+		desc:Your actions energizes the universe, making energos easier to make. <//><b>Effect:</b><.>Reduces the cost of <b>energos</b> for each action ever made.
+		icon:badge[0,0] icon[0,2] base[1,2] base[0,0]
+		passive:multiply cost of energos by (1/max(1,godlyActions))
+		req:10 energos
+		req:10 chronons
+		cost:1000 energy
+		cost:1000 time
+
+	*handUpI
+		name:String Entanglement
+		desc:Whenever you grab your universe, you entangle its strings, generating more space. <//><b>Effect:</b><.>Increases core production of <b>grabs</b> by <b>[string]</b> (1 for each string you have)
+		icon:badge[0,0] icon[0,5] base[0,0]
+		passive:increase space yield of rightHand by string
+		passive:increase space yield of leftHand by string
+		req:25 grabs
+		cost:100 space
+
+	*eyeUpI
+		name:Minute Watcher
+		desc:Whenever you watch your universe, you remember how it was each minute ago, generating more time. <//><b>Effect:</b><.>Increases core production of <b>watches</b> by <b>[floor(godlySeconds/60)]</b> (1 for each minute you have played)
+		icon:badge[0,0] icon[0,6] base[0,0]
+		passive:increase time yield of eye by floor(godlySeconds/60)
+		req:25 watches
+		cost:100 time
+
+	*fingerUpI
+		name:Deepening Touch
+		desc:Whenever you touch your universe, you deepen your connection with it, generating more energy. <//><b>Effect:</b><.>Increases core production of <b>touches</b> by <b>[touches]</b> (1 for each touch you have made)
+		icon:badge[0,0] icon[0,7] base[0,0]
+		passive:increase energy yield of finger by touches
+		req:25 touches
+		cost:100 energy
+
+	*handAddI
+		name:Stretch
+		desc:With both hands, you stretch your universe, expanding the space. <//><b>Effect:</b><.>Unlocks the <b>Stretch</b> action to <b>[n:leftHand]</b> and <b>[n:leftHand]</b><.>Alternate between hands to trigger <b>stretch</b><.><b>Stretch</b> grants you 1% of your current space.
+		icon:badge[0,2] icon[0,5] base[0,0]
+		req:100 grabs
+		cost:500 space
+
+	*eyeAddI
+		name:Time Shift
+		desc:Watching the universe sometimes distorts the difference between your time and your universe time. <//><b>Effect:</b><.>Unlocks the <b>Time Shift</b> action to <b>[n:eye]</b>.<.><b>Time Shift</b> grants 1 second of your current production.
+		icon:badge[0,2] icon[0,6] base[0,0]
+		req:100 watches
+		cost:500 time
+
+	*fingerAddI
+		name:Feedback
+		desc:Touching your universe makes you feel it, turning it easier to create things. <//><b>Effect:</b><.>Unlocks the <b>Feedback</b> action to <b>[n:finger]</b>.<b>Feedback</b> grants 1% cost reduction for the next producer or upgrade you buy. It is stackable.
+		icon:badge[0,2] icon[0,7] base[0,0]
+		req:100 touches
+		cost:500 energy
+//----------------------------------------------Exclusive-----------------------------------------------------------------//
+
+	*handTraitRightI
+		name:You have the right to remain pulling
+		desc:You pull the universe with one hand, distorting the space. <//><b>Effect:</b><.>Unlocks the <b>Pull</b> action to <b>[n:leftHand]</b> and <b>[n:leftHand]</b><.>Grants <b>10%</b> chance of triggering a pull on <b>[n:rightHand]</b> clicks<.><b>Pull (Right)</b> multiplies the effectiveness of your <b>Stretch (Left)</b> by <b>2</b> for each pull in a row, but also has a increasing chance of triggering a <b>Stretch (Right)</b>.
+		icon:badge[0,0] icon[0,3] base[0,1]
+		req:handAddI
+		req:rightI
+		req:100 grabs
+		cost:500 space
+
+	*handTraitLeftI
+		name:Left4Pull
+		desc:You pull the universe with one hand, distorting the space. <//><b>Effect:</b><.>Unlocks the <b>Pull</b> action to <b>[n:leftHand]</b> and <b>[n:leftHand]</b><.>Grants <b>10%</b> chance of triggering a pull on <b>[n:leftHand]</b> clicks<.><b>Pull (Left)</b> multiplies the effectiveness of your <b>Stretch (Right)</b> by <b>2</b> for each pull in a row, but also has a increasing chance of triggering a <b>Stretch (Left)</b>.
+		icon:badge[0,0] icon[0,4] base[0,1]
+		req:handAddI
+		req:leftI
+		req:100 grabs
+		cost:500 space
+
+	*handTraitBothI
+		name:To pull both is to stretch!
+		desc:You pull the universe with both hands, always stretching it. <//><b>Effect:</b><.>Unlocks the <b>Pull</b> action to <b>[n:leftHand]</b> and <b>[n:leftHand]</b><.><b>Stretch (Right)</b> and <b>Stretch (Left)</b> grants <b>5%</b> of your current space.
+		icon:badge[0,0] icon[0,5] base[0,1]
+		req:handAddI
+		req:bothI
+		req:100 grabs
+		cost:500 space
+
+	*eyeTraitNoI
+		name:Time Alignment
+		desc:Distort time to align your universe time to your time. <//><b>Effect:</b><.>Triggers the <b>Time Shift</b> action on <b>[n:eye]</b> clicks made in the first second of a minute spent.
+		icon:badge[0,2] icon[0,6] base[0,1]
+		req:eyeAddI
+		req:noWaitI
+		req:100 watches
+		cost:500 time
+
+	*eyeTraitStaticI
+		name:Time Recycling
+		desc:Value the time you waste with this game. Use it in your universe! <//><b>Effect:</b><.>Triggers the <b>Time Shift</b> action every 5 minutes.
+		icon:badge[0,2] icon[0,6] base[0,1]
+		passive:
+			$twoMin = godlySeconds%300
+			if ($twoMin=0) do timeshift with eye
+		end
+		req:eyeAddI
+		req:staticWaitI
+		req:100 watches
+		cost:500 time
+
+	*eyeTraitFairI
+		name:Idle-Active-in-Between
+		desc:You click, but once every a while... <//><b>Effect:</b><.><b>[n:eye]</b> clicks triggers the <b>Time Shift</b> action if you have been idle for 20 seconds.
+		icon:badge[0,2] icon[0,6] base[0,1]
+		passive:
+			if (idleSeconds>=20)
+				do gainidle with eye
+			end
+		end
+		req:eyeAddI
+		req:fairWaitI
+		req:100 watches
+		cost:500 time
+
+	*fingerTraitProducerI
+		name:Investments
+		desc:You get a nice feedback every time you buy something that produces something. <//><b>Effect:</b><.>Buying <b>Producers</b> triggers the <b>Feedback</b> action 5 times and has 50% chance to keep the discount.
+		icon:badge[0,2] icon[0,7] base[0,1]
+		req:fingerAddI
+		req:producerFocusI
+		req:100 touches
+		cost:500 energy
+
+	*fingerTraitClickI
+		name:Efforts
+		desc:You get a nice feedback for such a hard work. <//><b>Effect:</b><.><b>[n:finger]</b> clicks have 15% chance to trigger the <b>Feedback</b> action.
+		icon:badge[0,2] icon[0,7] base[0,1]
+		req:fingerAddI
+		req:clickFocusI
+		req:100 touches
+		cost:500 energy
+
+	*fingerTraitNoI
+		name:Together
+		desc:You get a nice feedback for collaborating with your producers. <//><b>Effect:</b><.><b>[n:finger]</b> clicks have 3% chance to trigger the <b>Feedback</b> action.<.>Buying <b>Producers</b> triggers the <b>Feedback</b> action 3 times.
+		icon:badge[0,2] icon[0,7] base[0,1]
+		req:fingerAddI
+		req:noFocusI
+		req:100 touches
+		cost:500 energy
+
+
+//------------------------------------------------------------------------------------------------------------------------//
+Achievements
+	*spaceAmountI
+		name:Planck Lenght
+		desc:Your first step into universe making, building the Planck Lenght of space, 1.6×10^-35 meters. <//><b>Reward for:</b><.>Achieve <b>2 space</b> units.
+		req:2 space
+		icon:badge[0,1] icon[0,8] base[0,0]
+
+	*timeAmountI
+		name:Planck Time
+		desc:Your first step into universe making, storing the Planck Time interval of time, 5.39×10−44 seconds. <//><b>Reward for:</b><.>Achieve <b>6 time</b> units.
+		req:6 time
+		icon:badge[0,1] icon[0,9] base[0,0]
+
+	*energyAmountI
+		name:Minimum Energy Possible?
+		desc:Your first step into universe making, creating the energy of a 3Hz frequency photon, 1.984×10−33 joules. <//><b>Reward for:</b><.>Achieve <b>20 energy</b> units.
+		req:20 energy
+		icon:badge[0,1] icon[0,10] base[0,0]
+
+//----------------------------------------------Exclusive-----------------------------------------------------------------//
+	*rightI
+		name:Right-Handedness
+		desc:You're doing it right!. <//><b>Reward for:</b><.>Achieve <b>100 grabs</b> using the right hand.
+		req:100 rightHand:clicks
+		req:no leftI
+		req:no bothI
+		icon:badge[0,1] icon[0,3] base[0,1]
+
+	*leftI
+		name:Left-Handedness
+		desc:That's what left to you!. <//><b>Reward for:</b><.>Achieve <b>100 grabs</b> using the left hand.
+		req:100 leftHand:clicks
+		req:no rightI
+		req:no bothI
+		icon:badge[0,1] icon[0,4] base[0,1]
+
+	*bothI
+		name:Ambidexterity
+		desc:You haven't left doing it right!. <//><b>Reward for:</b><.>Achieve <b>40 grabs</b> using each hand.
+		req:40 rightHand:clicks
+		req:40 leftHand:clicks
+		req:no rightI
+		req:no leftI
+		icon:badge[0,1] icon[0,5] base[0,1]
+
+	*noWaitI
+		name:Anxiety
+		desc:If you're going to make a universe you can't just sit and wait! <//><b>Reward for:</b><.>Do <b>a lot of things</b> before 1 minute of play.
+		req:200 godlyThings
+		req:no staticWaitI
+		req:no fairWaitI
+		icon:badge[0,1] icon[0,6] base[0,1]
+
+	*staticWaitI
+		name:Patience
+		desc:If you're going to be an IDLE god you should just sit and wait! <//><b>Reward for:</b><.>Do <b>nothing</b> until 1 minute of play.
+		req:60 godlySeconds
+		req:godlyThings=0
+		req:no noWaitI
+		req:no fairWaitI
+		icon:badge[0,1] icon[0,6] base[0,1]
+
+	*fairWaitI
+		name:Moderation
+		desc:You're making a universe, there is a lot of thing to do. But it is an idle one, there is a lot of time to wait! <//><b>Reward for:</b><.>Do <b>something</b>, but no too much, before 1 minutes of play.
+		req:60 godlySeconds
+		req:no noWaitI
+		req:no staticWaitI
+		icon:badge[0,1] icon[0,6] base[0,1]
+
+	*producerFocusI
+		name:Pay to Win
+		desc:You are not clicking, that's why they were bought to! <//><b>Reward for:</b><.>Buy <b>10 producers</b> without clicking.
+		req:10 godlyProducers
+		req:godlyClicks=0
+		req:no clickFocusI
+		req:no noFocusI
+		icon:badge[0,1] https://i.imgur.com/QAuXTBO.png icon[0,7] base[0,1]
+
+	*clickFocusI
+		name:Play to Win
+		desc:You are not waiting, you're fucking clicking! <//><b>Reward for:</b><.>Achieve <b>100 clicks</b> before buying anything.
+		req:100 godlyClicks
+		req:godlyProducers=0
+		req:no producerFocusI
+		req:no noFocusI
+		icon:badge[0,1] icon[0,7] base[0,1]
+
+	*noFocusI
+		name:Pay to Play
+		desc:Buy and click, click and buy! <//><b>Reward for:</b><.>Achieve <b>100 clicks</b> after buying <b>10 producers</b>.
+		req:100 godlyClicks
+		req:10 godlyProducers
+		req:no producerFocusI
+		req:no clickFocusI
+		icon:badge[0,1] icon[0,7] base[0,1]
+
+Shinies
+/*
+
+ 
+
+
+
+
+
+
+
+
+
+
+*/
