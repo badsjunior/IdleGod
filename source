@@ -1,9 +1,8 @@
 Let's make a game!
-	name:	Idle God v0.1 (ALPHA)
+	name:	Idle God v0.1 (Closed ALPHA) - Dev
 	by:		Braz Araujo da Silva Junior
-	desc:	In this game you control a universe and decide how you are going to shape it!
-	created:30/05/2018
-	updated:25/06/2018
+	created:01/07/2018
+	updated:02/07/2018
 
 Settings
 	background:	https://i.ytimg.com/vi/DgtXWjd3H5s/maxresdefault.jpg
@@ -317,10 +316,10 @@ Buttons
 			idleSeconds = 0
 		end
 
-	//*debug
-	//	on click:
-	//		do gainidle with eye
-	//	end
+	*debug
+		on click:
+			do gainidle with eye
+		end
 
 	*rightHand
 		name:Grab (Right)
@@ -868,16 +867,4 @@ Achievements
 
 Shinies
 /*
-
- 
-
-
-
-
-
-
-
-
-
-
 */
